@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import MovieList from "./components/MovieList";
 import Movie from "./components/Movie";
 import MovieHeader from "./components/MovieHeader";
@@ -10,6 +10,7 @@ import axios from "axios";
 const App = (props) => {
   const [movies, setMovies] = useState([]);
   const [favoriteMovies, setFavoriteMovies] = useState([]);
+  const { push } = useHistory();
 
   useEffect(() => {
     axios
@@ -22,7 +23,19 @@ const App = (props) => {
       });
   }, []);
 
-  const deleteMovie = (id) => {};
+  const deleteMovie = (id) => {
+    axios
+      .delete(`http://localhost:9000/api/movies/${id}`)
+      .then((res) => {
+        console.log(res);
+        //setMovies(movies.filter((movie)=>movie.id!==id)); normalde kullanılacak silme methodu
+        setMovies(res.data); // bu örnek için yeterli olan silme delete ile gerçekleştiği için kalan filmleri döndüren method
+        push("/movies");
+      })
+      .catch((err) => {
+        console.log(err.response);
+      });
+  };
 
   const addToFavorites = (movie) => {};
 
@@ -43,7 +56,10 @@ const App = (props) => {
             </Route>
 
             <Route path="/movies/:id">
-              <Movie />
+              <Movie
+                addToFavorites={addToFavorites}
+                deleteMovie={deleteMovie}
+              />
             </Route>
 
             <Route path="/movies">
