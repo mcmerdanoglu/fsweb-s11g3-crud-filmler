@@ -3,6 +3,9 @@ import { useParams, useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
+//modal için sweetalert kütüphanesi
+import Swal from "sweetalert2";
+
 const EditMovieForm = (props) => {
   const { push } = useHistory();
   const { id } = useParams();
@@ -37,15 +40,30 @@ const EditMovieForm = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
-      .put(`http://localhost:9000/api/movies/${id}`, movie)
-      .then((res) => {
-        setMovies(res.data);
-        push(`/movies`);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    Swal.fire({
+      title: "Değişiklikleri kaydetmek istediğine emin misin?",
+      showDenyButton: true,
+      showCancelButton: true,
+      //confirmButtonColor: "green", Eğer istenirse renk değiştirilebilir
+      confirmButtonText: "Kaydet",
+      denyButtonText: `Kaydetme`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire("Değişiklikler kaydedildi!", "", "success");
+
+        axios
+          .put(`http://localhost:9000/api/movies/${id}`, movie)
+          .then((res) => {
+            setMovies(res.data);
+            push(`/movies`);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else if (result.isDenied) {
+        Swal.fire("Değişiklikler kaydedilmedi", "", "info");
+      }
+    });
   };
 
   const { title, director, genre, metascore, description } = movie;

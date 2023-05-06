@@ -63,6 +63,12 @@ const App = (props) => {
   const addToFavorites = (movie) => {
     if (!favoriteMovies.find((favMovie) => favMovie.id === movie.id)) {
       setFavoriteMovies([...favoriteMovies, movie]);
+      Swal.fire({
+        icon: "success",
+        title: "Yihhuu",
+        text: "Favorilere eklendi!",
+        footer: `${movie.title} adlı film artık favori listenizde`,
+      });
     } else {
       Swal.fire({
         icon: "warning",
