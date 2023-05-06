@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const EditMovieForm = (props) => {
   const { push } = useHistory();
@@ -24,14 +25,46 @@ const EditMovieForm = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
-      .post(`http://localhost:9000/api/movies/`, movie)
-      .then((res) => {
-        setMovies(res.data);
-        push(`/movies`);
+    const swalWithBootstrapButtons = Swal.mixin({
+      confirmButtonColor: "green",
+      cancelButtonColor: "#d33",
+      buttonsStyling: true,
+    });
+
+    swalWithBootstrapButtons
+      .fire({
+        title: "Emin misin?",
+        text: `${movie.title} isimli film eklenecek`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Evet, ekle",
+        cancelButtonText: "Hayır, ekleme!",
+        reverseButtons: false,
       })
-      .catch((err) => {
-        console.log(err);
+      .then((result) => {
+        if (result.isConfirmed) {
+          swalWithBootstrapButtons.fire(
+            "Olleyyy",
+            `${movie.title} isimli film eklendi`,
+            "success"
+          );
+
+          axios
+            .post(`http://localhost:9000/api/movies/`, movie)
+            .then((res) => {
+              setMovies(res.data);
+              push(`/movies`);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          swalWithBootstrapButtons.fire(
+            "Eklenmedi",
+            "Ekleme işlemi onaylanmadı",
+            "error"
+          );
+        }
       });
   };
 
