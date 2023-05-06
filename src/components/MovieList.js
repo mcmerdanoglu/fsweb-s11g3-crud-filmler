@@ -2,10 +2,10 @@ import React from "react";
 
 import MovieListItem from "./MovieListItem";
 import MovieFooter from "./MovieFooter";
-import FavoriteMovieList from "./FavoriteMovieList";
+//import FavoriteMovieList from "./FavoriteMovieList";
 
 const MovieList = (props) => {
-  const { movies, favoriteMovies } = props;
+  const { movies /*favoriteMovies*/ } = props;
 
   return (
     <div className="flex-1">

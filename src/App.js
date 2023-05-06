@@ -10,8 +10,8 @@ import axios from "axios";
 
 //modal için sweetalert kütüphanesi
 import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
 
+//import withReactContent from "sweetalert2-react-content";
 //const MySwal = withReactContent(Swal);
 
 const App = (props) => {
@@ -60,7 +60,18 @@ const App = (props) => {
     });
   };
 
-  const addToFavorites = (movie) => {};
+  const addToFavorites = (movie) => {
+    if (!favoriteMovies.find((favMovie) => favMovie.id === movie.id)) {
+      setFavoriteMovies([...favoriteMovies, movie]);
+    } else {
+      Swal.fire({
+        icon: "warning",
+        title: "Oops...",
+        text: `${movie.title} adlı film zaten favori listenizde`,
+        footer: "Bir film favori listenizde sadece 1 defa yer alabilir",
+      });
+    }
+  };
 
   return (
     <div>
